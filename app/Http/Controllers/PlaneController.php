@@ -115,17 +115,21 @@ class PlaneController extends Controller
 
     public function storeSchedule(Request $request)
     {
+      // nama/kode/kursi diturunkan dari id di server; input tersembunyi dari JS tak andal (append ke <input> gagal)
+      $origin      = Airport::find($request->airport_id);
       $destination = Airport::find($request->destination);
+      $plane       = Plane::find($request->plane_id);
+      if (!$origin || !$destination || !$plane) return back()->withInput(); // ketiganya wajib untuk jadwal baru
       $planeschedule = new PlaneSchedule();
-      $planeschedule->plane_id          = $request->plane_id;
-      $planeschedule->airport_id        = $request->airport_id;
-      $planeschedule->from              = $request->from;
+      $planeschedule->plane_id          = $plane->id;
+      $planeschedule->airport_id        = $origin->id;
+      $planeschedule->from              = $origin->airport_name;
       $planeschedule->destination       = $destination->airport_name;
-      $planeschedule->from_code         = $request->from_code;
-      $planeschedule->destination_code  = $request->destination_code;
-      $planeschedule->eco_seat          = $request->eco_seat;
-      $planeschedule->bus_seat          = $request->bus_seat;
-      $planeschedule->first_seat        = $request->first_seat;
+      $planeschedule->from_code         = $origin->code;
+      $planeschedule->destination_code  = $destination->code;
+      $planeschedule->eco_seat          = $plane->eco_seat;
+      $planeschedule->bus_seat          = $plane->bus_seat;
+      $planeschedule->first_seat        = $plane->first_seat;
       $planeschedule->boarding_time     = $request->boarding_time;
       $planeschedule->duration          = strtotime($request->duration);
       $planeschedule->gate              = $request->gate;
@@ -143,20 +147,18 @@ class PlaneController extends Controller
 
     public function updateSchedule(Request $request, $id)
     {
+      // tiap select yang tak diubah (opsi default disabled) tidak terkirim: pertahankan nilai lama
+      $origin      = Airport::find($request->airport_id);
       $destination = Airport::find($request->destination);
+      $plane       = Plane::find($request->plane_id);
       $planeschedule = PlaneSchedule::findorFail($id);
-      $planeschedule->plane_id          = $request->plane_id;
-      $planeschedule->airport_id        = $request->airport_id;
-      $planeschedule->from              = $request->from;
-      $planeschedule->destination       = $request->destination;
-      $planeschedule->from_code         = $request->from_code;
-      $planeschedule->destination_code  = $request->destination_code;
-      $planeschedule->eco_seat          = $request->eco_seat;
-      $planeschedule->bus_seat          = $request->bus_seat;
-      $planeschedule->first_seat        = $request->first_seat;
+      if ($origin)      { $planeschedule->airport_id = $origin->id; $planeschedule->from = $origin->airport_name; $planeschedule->from_code = $origin->code; }
+      if ($destination) { $planeschedule->destination = $destination->airport_name; $planeschedule->destination_code = $destination->code; }
+      if ($plane)       { $planeschedule->plane_id = $plane->id; $planeschedule->eco_seat = $plane->eco_seat; $planeschedule->bus_seat = $plane->bus_seat; $planeschedule->first_seat = $plane->first_seat; }
       $planeschedule->boarding_time     = $request->boarding_time;
       $planeschedule->duration          = strtotime($request->duration);
       $planeschedule->gate              = $request->gate;
+      $planeschedule->save();
       return redirect('admin/plane/schedule/index')->with('alert-success','Berhasil Mengubah Data!');
     }
 
