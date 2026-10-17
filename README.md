@@ -2,8 +2,11 @@
 
 Aplikasi web pemesanan tiket pesawat berbasis **Laravel 8** dan **MySQL**. Pengguna bisa mencari jadwal penerbangan, memesan tiket sekali jalan atau pulang-pergi, membayar lewat transfer bank, dan mengunduh e-tiket. Admin mengelola pesawat, bandara, jadwal, dan pesanan.
 
-<!-- Tambahkan screenshot: simpan gambar di folder docs/ lalu hapus tanda komentar di bawah -->
-<!-- ![Halaman utama](docs/screenshot.png) -->
+## Preview
+
+| Halaman Utama | Dashboard Admin | E-Tiket Member |
+|---|---|---|
+| ![Halaman utama](docs/halaman_awal.png) | ![Dashboard admin](docs/halaman_dashboard_admin.png) | ![E-tiket member](docs/halaman_tiket_member.png) |
 
 ## Fitur
 
@@ -37,7 +40,7 @@ php artisan key:generate
 2. Sesuaikan `DB_DATABASE`, `DB_USERNAME`, dan `DB_PASSWORD` di file `.env`.
 3. Jalankan `php artisan serve` lalu buka http://localhost:8000.
 
-**Akun demo:** `member@gmail.com` (member) dan `admin@gmail.com` (admin). <!-- isi password demo di sini -->
+**Akun demo:** `member@gmail.com` (member) dan `admin@gmail.com` (admin). Password keduanya: `demo1234`.
 
 ## Struktur singkat
 
